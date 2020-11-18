@@ -1,4 +1,4 @@
-#include"buses.h"
+#include "buses.h"
 #include "input_parser.h"
 
 #include <set>
@@ -27,6 +27,7 @@ void BusManager::AddBus(AddQuery query) {
     
     buses[bus.number] = bus;
 }
+
 
 
 int BusManager::GetStopNumber(Bus b) const {
