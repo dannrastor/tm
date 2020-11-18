@@ -33,7 +33,39 @@ void TestAddQueryConstructor() {
     }
 } 
 
+void TestDistance() {
+    {
+        StopManager sm;
+        Stop a = {"Red square", 55.7539, 37.6208};
+        Stop b = {"Hermitage", 59.9398, 30.3146};
+        double dist = sm.GetDistance(a, b);
+        ASSERT_EQUAL((dist/1000 > 634), (dist/1000 < 635));
+    }
+}
+
+
+void TestManagers() {
+    {
+        BusManager bm;
+        StopManager sm;
+        
+        bm.AddBus(AddQuery("Bus 1: A > B > A"));
+        
+        sm.AddStop(AddQuery("Stop A: 0.0 0.0"));
+        sm.AddStop(AddQuery("Stop B: 0.0 0.05"));
+        
+        stringstream ss;
+        string expected = "Bus 1: 3 stops on route, 2 unique stops, 11119.5 route length\n";
+        bm.PrintBusStats(1, ss, sm);
+        ASSERT_EQUAL(expected, ss.str());
+    }
+    
+}
+
 void TestAll() {
     TestRunner tr;
+    
     RUN_TEST(tr, TestAddQueryConstructor);
+    RUN_TEST(tr, TestDistance);
+    RUN_TEST(tr, TestManagers);
 }

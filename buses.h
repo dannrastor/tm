@@ -29,16 +29,16 @@ public:
 
     void PrintBusStats(int number, std::ostream& output, StopManager& sm) const;
     
-    void AddBus(const AddQuery& query);
+    void AddBus(AddQuery query);
     
     
 private:
-    std::optional<const Bus&> GetByNumber(int number) const;
+    std::optional<Bus> GetByNumber(int number) const;
     
     //number should be valid
-    int GetStopNumber(int number) const;
-    int GetUniqueStopNumber(int number) const;
-    double GetRouteLength(int number, int StopManager& sm) const;
+    int GetStopNumber(Bus b) const;
+    int GetUniqueStopNumber(Bus b) const;
+    double GetRouteLength(Bus b, StopManager& sm) const;
     
     std::unordered_map<int, Bus> buses;
 };

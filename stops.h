@@ -22,7 +22,7 @@ public:
     double GetDistance(const Stop& lhs, const Stop& rhs) const;
     double GetDistance(const string& lhs, const string& rhs) const;
     const Stop& GetByName(const string& name) const;
-    void AddStop(const AddQuery& query);
+    void AddStop(AddQuery query);
 private:
     std::unordered_map<string, Stop> all_stops;
 };

@@ -2,26 +2,30 @@
 #include "input_parser.h"
 
 #include <set>
+#include <iomanip>
 
 using namespace std;
 
-optional<const Bus&> BusManager::GetByNumber(int number) const {
+optional<Bus> BusManager::GetByNumber(int number) const {
     if (buses.count(number)) {
-        return make_optional(buses.at(number));
+        auto result = make_optional(buses.at(number));
+        return result;
     } else {
         return nullopt;
     }
 }
 
-void BusManager::AddBus(const AddQuery& query) {
+void BusManager::AddBus(AddQuery query) {
     Bus bus;
-    bus.number = ConvertToInt(query.name);
+    bus.number = ConvertToInt(query.GetName());
     if (query.GetType() == AddQuery::Type::BUS_TWO_WAY) {
-        route_type = RouteType::TWO_WAY;
+        bus.route_type = RouteType::TWO_WAY;
     } else if (query.GetType() == AddQuery::Type::BUS_ROUND_TRIP) {
-        route_type = RouteType::ROUND_TRIP;
+        bus.route_type = RouteType::ROUND_TRIP;
     }
     bus.stops = query.GetContents();
+    
+    buses[bus.number] = bus;
 }
 
 
@@ -34,26 +38,31 @@ int BusManager::GetUniqueStopNumber(Bus b) const {
     return s.size();
 }
 
-double BusManager::GetRouteLength(Bus b, int StopManager& sm) const {
+double BusManager::GetRouteLength(Bus b, StopManager& sm) const {
     auto it_b = b.stops.begin();
     auto it_e = b.stops.end();
     
     double result = 0;
     
-    for (const auto& it_b; it != it_e; ++it) {
+    for (auto& it = it_b; it != prev(it_e); ++it) {
         result += sm.GetDistance(*it, *next(it));
     }
     
     return result;
 }
 
-void PrintBusStats(int number, std::ostream& output, StopManager& sm) const {
+void BusManager::PrintBusStats(int number, std::ostream& output, StopManager& sm) const {
     output << "Bus " << number << ": ";
+
     auto bus_opt = GetByNumber(number);
+       
     if (bus_opt) {
-        output << GetStopNumber(*b) << " stops on route, ";
-        output << GetUniqueStopNumber(*b) << "unique stops, ";
-        output << setprecision(6) << GetUniqueStopNumber(*b) << "route length, ";
+        output << GetStopNumber(*bus_opt) << " stops on route, ";
+        output << GetUniqueStopNumber(*bus_opt) << " unique stops, ";
+        output << setprecision(6) << GetRouteLength(*bus_opt, sm) << " route length\n";
+
+    } else {
+        output << "not found\n";
     }
     
 }
