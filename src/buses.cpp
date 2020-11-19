@@ -31,7 +31,11 @@ void BusManager::AddBus(AddQuery query) {
 
 
 int BusManager::GetStopNumber(Bus b) const {
-    return b.stops.size();
+    int result = b.stops.size();
+    if (b.route_type == RouteType::TWO_WAY) {
+        return result * 2 - 1;
+    }
+    return result;
 }
 
 int BusManager::GetUniqueStopNumber(Bus b) const {
@@ -47,6 +51,10 @@ double BusManager::GetRouteLength(Bus b, StopManager& sm) const {
     
     for (auto& it = it_b; it != prev(it_e); ++it) {
         result += sm.GetDistance(*it, *next(it));
+    }
+    
+    if (b.route_type == RouteType::TWO_WAY) {
+        result *= 2;
     }
     
     return result;

@@ -30,7 +30,7 @@ AddQuery::AddQuery(const string& input) {
         }
     } else if (query_type == "Stop") {
         type = Type::STOP;
-
+        delim = ", ";
     }
     
     while(!s.empty()) {

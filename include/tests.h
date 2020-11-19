@@ -24,7 +24,7 @@ void TestAddQueryConstructor() {
         ASSERT_EQUAL(aq.GetContents(), expected_contents);
     }
     {
-        string input = "Stop Ass: 69.420 13.37";
+        string input = "Stop Ass: 69.420, 13.37";
         vector<string> expected_contents = {"69.420", "13.37"};
         AddQuery aq(input);
         ASSERT_EQUAL(aq.GetName(), "Ass");
@@ -51,8 +51,8 @@ void TestManagers() {
         
         bm.AddBus(AddQuery("Bus 1: A > B > A"));
         
-        sm.AddStop(AddQuery("Stop A: 0.0 0.0"));
-        sm.AddStop(AddQuery("Stop B: 0.0 0.05"));
+        sm.AddStop(AddQuery("Stop A: 0.0, 0.0"));
+        sm.AddStop(AddQuery("Stop B: 0.0, 0.05"));
         
         stringstream ss;
         string expected = "Bus 1: 3 stops on route, 2 unique stops, 11119.5 route length\n";
@@ -66,8 +66,8 @@ void TestParseQueries() {
     TmCore tmc;
     stringstream add_input("3\n"
                             "Bus 1: A > B > A\n"
-                            "Stop A: 1.0 2.0\n"
-                            "Stop B: 0.0 0.05");
+                            "Stop A: 1.0, 2.0\n"
+                            "Stop B: 0.0, 0.05");
     auto aqs = tmc.ParseQueries<AddQuery>(add_input);
     
     ASSERT_EQUAL(aqs.size(), 3);
@@ -77,12 +77,11 @@ void TestParseQueries() {
 }
 
 
-
 void TestCore() {
     stringstream add_input("3\n"
                             "Bus 1: A > B > A\n"
-                            "Stop A: 0.0 0.0\n"
-                            "Stop B: 0.0 0.05");
+                            "Stop A: 0.0, 0.0\n"
+                            "Stop B: 0.0, 0.05");
     stringstream read_input("1\n"
                              "Bus 1");
     stringstream ss;
@@ -97,6 +96,39 @@ void TestCore() {
     
 }
 
+void TestPartA() {
+    stringstream input(
+        "10\n"
+        "Stop Tolstopaltsevo: 55.611087, 37.20829\n"
+        "Stop Marushkino: 55.595884, 37.209755\n"
+        "Bus 256: Biryulyovo Zapadnoye > Biryusinka > Universam > Biryulyovo Tovarnaya > Biryulyovo Passazhirskaya > Biryulyovo Zapadnoye\n"
+        "Bus 750: Tolstopaltsevo - Marushkino - Rasskazovka\n"
+        "Stop Rasskazovka: 55.632761, 37.333324\n"
+        "Stop Biryulyovo Zapadnoye: 55.574371, 37.6517\n"
+        "Stop Biryusinka: 55.581065, 37.64839\n"
+        "Stop Universam: 55.587655, 37.645687\n"
+        "Stop Biryulyovo Tovarnaya: 55.592028, 37.653656\n"
+        "Stop Biryulyovo Passazhirskaya: 55.580999, 37.659164\n"
+        "3\n"
+        "Bus 256\n"
+        "Bus 750\n"
+        "Bus 751\n");
+    string expected = "Bus 256: 6 stops on route, 5 unique stops, 4371.02 route length\n"
+                      "Bus 750: 5 stops on route, 3 unique stops, 20939.5 route length\n"
+                      "Bus 751: not found\n";
+    
+    TmCore tmc;
+    
+    stringstream ss;
+    tmc.ProcessAddQueries(tmc.ParseQueries<AddQuery>(input));
+    tmc.ProcessReadQueries(tmc.ParseQueries<ReadQuery>(input), ss);
+    
+    ASSERT_EQUAL(expected, ss.str());
+    
+    
+    
+}
+
 void TestAll() {
     TestRunner tr;
     
@@ -105,4 +137,5 @@ void TestAll() {
     RUN_TEST(tr, TestManagers);
     RUN_TEST(tr, TestParseQueries);
     RUN_TEST(tr, TestCore);
+    RUN_TEST(tr, TestPartA);
 }
