@@ -55,7 +55,9 @@ ReadQuery::ReadQuery(const string& input) {
     
     if (query_type == "Bus") {
         type = Type::BUS;
-    } 
+    } else if (query_type == "Stop") {
+        type = Type::STOP;
+    }
     
 }
 

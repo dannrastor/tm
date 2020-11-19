@@ -37,7 +37,8 @@ private:
 class ReadQuery : public Query{
 public:
     enum class Type {
-        BUS
+        BUS,
+        STOP
     };
     
     ReadQuery(const string& input);
