@@ -38,7 +38,7 @@ void TestDistance() {
         StopManager sm;
         Stop a = {"Red square", 55.7539, 37.6208};
         Stop b = {"Hermitage", 59.9398, 30.3146};
-        double dist = sm.GetDistance(a, b);
+        double dist = sm.GetPhysicalDistance(a, b);
         ASSERT_EQUAL((dist/1000 > 634), (dist/1000 < 635));
     }
 }

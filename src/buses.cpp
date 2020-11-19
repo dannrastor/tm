@@ -43,22 +43,7 @@ int BusManager::GetUniqueStopNumber(Bus b) const {
     return s.size();
 }
 
-double BusManager::GetRouteLength(Bus b, StopManager& sm) const {
-    auto it_b = b.stops.begin();
-    auto it_e = b.stops.end();
-    
-    double result = 0;
-    
-    for (auto& it = it_b; it != prev(it_e); ++it) {
-        result += sm.GetDistance(*it, *next(it));
-    }
-    
-    if (b.route_type == RouteType::TWO_WAY) {
-        result *= 2;
-    }
-    
-    return result;
-}
+
 
 void BusManager::PrintBusStats(string number, std::ostream& output, StopManager& sm) const {
     output << "Bus " << number << ": ";
@@ -68,7 +53,7 @@ void BusManager::PrintBusStats(string number, std::ostream& output, StopManager&
     if (bus_opt) {
         output << GetStopNumber(*bus_opt) << " stops on route, ";
         output << GetUniqueStopNumber(*bus_opt) << " unique stops, ";
-        output << setprecision(6) << GetRouteLength(*bus_opt, sm) << " route length\n";
+        output << setprecision(6) << sm.CalculatePhysicalLength(*bus_opt) << " route length\n";
 
     } else {
         output << "not found\n";

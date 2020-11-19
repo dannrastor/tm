@@ -38,7 +38,7 @@ private:
     //number should be valid
     int GetStopNumber(Bus b) const;
     int GetUniqueStopNumber(Bus b) const;
-    double GetRouteLength(Bus b, StopManager& sm) const;
+
     
     std::unordered_map<string, Bus> buses;
 };
