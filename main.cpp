@@ -1,4 +1,4 @@
-
+#include "core.h"
 #include "query.h"
 #include "stops.h"
 #include "buses.h"
@@ -7,6 +7,9 @@
 
 
 int main() {
-    TestAll();
+    //TestAll();
+    TmCore tmc;
+    tmc.ProcessAddQueries(tmc.ParseQueries<AddQuery>(cin));
+    tmc.ProcessReadQueries(tmc.ParseQueries<ReadQuery>(cin), cout);
     return 0;
 } 

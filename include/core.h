@@ -1,3 +1,5 @@
+#pragma once
+
 #include "buses.h"
 #include "stops.h"
 #include "query.h"
