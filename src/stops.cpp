@@ -4,6 +4,7 @@
 
 #include<cmath>
 #include<sstream>
+#include<iterator>
 
 using namespace std;
 
@@ -21,7 +22,17 @@ double StopManager::GetPhysicalDistance(const string& lhs, const string& rhs) co
     return GetPhysicalDistance(*GetByName(lhs), *GetByName(rhs));
 }
 
+int StopManager::GetRoadDistance(const Stop& from, const Stop& to) const {
+    if (from.distance_to.count(to.name)) {
+        return from.distance_to.at(to.name);
+    } else {
+        return to.distance_to.at(from.name);
+    }
+}
 
+int StopManager::GetRoadDistance(const string& from, const string& to) const {
+    return GetRoadDistance(*GetByName(from), *GetByName(to));
+}
 
 void StopManager::AddStop(AddQuery query) {
     Stop stop;
@@ -33,7 +44,27 @@ void StopManager::AddStop(AddQuery query) {
         all_stops[name].latitude = lat;
         all_stops[name].longitude = lon;
     } else {
-        all_stops[name] = {name, lat, lon, {}};
+        all_stops[name] = {name, lat, lon, {}, {}};
+        //auto& contents = query.GetContents();
+    }
+    
+//     for (auto it : query.GetContents()) {
+//         cout << "[" << it << "]" << endl;
+//     }
+    
+    
+    int n_contents = query.GetContents().size();
+    
+  
+    
+    if (n_contents > 2) {
+        for (int i = 2; i < n_contents; ++i) {
+            string s = query.GetContents()[i];
+            string_view sv(s);
+            string distance(ReadToken(sv, "m to "));
+            string destination(sv);
+            all_stops[name].distance_to[destination] = ConvertToInt(distance);
+        }
     }
 } 
 
@@ -93,6 +124,28 @@ double StopManager::CalculatePhysicalLength(const Bus& b) const {
     
     if (b.route_type == RouteType::TWO_WAY) {
         result *= 2;
+    }
+    
+    return result;
+}
+
+int StopManager::CalculateRoadLength(const Bus& b) const {
+    
+    auto it_b = b.stops.begin();
+    auto it_e = b.stops.end();
+    
+    int result = 0;
+    
+    for (auto& it = it_b; it != prev(it_e); ++it) {
+        result += GetRoadDistance(*it, *next(it));
+    }
+    
+    if (b.route_type == RouteType::TWO_WAY) {
+        auto rit_b = rbegin(b.stops);
+        auto rit_e = rend(b.stops);
+        for (auto& it = rit_b; it != prev(rit_e); ++it) {
+            result += GetRoadDistance(*it, *next(it));
+        }
     }
     
     return result;

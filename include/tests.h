@@ -56,7 +56,7 @@ void TestManagers() {
         
         stringstream ss;
         string expected = "Bus 1: 3 stops on route, 2 unique stops, 11119.5 route length\n";
-        bm.PrintBusStats("1", ss, sm);
+        bm.PrintBusStatsA("1", ss, sm);
         ASSERT_EQUAL(expected, ss.str());
     }
     
@@ -169,6 +169,61 @@ void TestPartB() {
     ASSERT_EQUAL(expected, ss.str());
 }
 
+void TestAddStopC() {
+    StopManager sm;
+    
+    sm.AddBusStats(AddQuery("Bus 1: A - B"));
+    sm.AddStop(AddQuery("Stop A: 1.0, 2.0, 10m to C, 20m to D"));
+    
+    auto stop = *(sm.GetByName("A"));
+    ASSERT_EQUAL(stop.name, "A");
+    ASSERT_EQUAL(stop.latitude, 1.0);
+    ASSERT_EQUAL(stop.longitude, 2.0);
+    ASSERT_EQUAL(stop.distance_to["C"], 10);
+    ASSERT_EQUAL(stop.distance_to["D"], 20);
+    
+}
+
+void TestPartC() {
+    stringstream input("13\n"
+                        "Stop Tolstopaltsevo: 55.611087, 37.20829, 3900m to Marushkino\n"
+                        "Stop Marushkino: 55.595884, 37.209755, 9900m to Rasskazovka\n"
+                        "Bus 256: Biryulyovo Zapadnoye > Biryusinka > Universam > Biryulyovo Tovarnaya > Biryulyovo Passazhirskaya > Biryulyovo Zapadnoye\n"
+                        "Bus 750: Tolstopaltsevo - Marushkino - Rasskazovka\n"
+                        "Stop Rasskazovka: 55.632761, 37.333324\n"
+                        "Stop Biryulyovo Zapadnoye: 55.574371, 37.6517, 7500m to Rossoshanskaya ulitsa, 1800m to Biryusinka, 2400m to Universam\n"
+                        "Stop Biryusinka: 55.581065, 37.64839, 750m to Universam\n"
+                        "Stop Universam: 55.587655, 37.645687, 5600m to Rossoshanskaya ulitsa, 900m to Biryulyovo Tovarnaya\n"
+                        "Stop Biryulyovo Tovarnaya: 55.592028, 37.653656, 1300m to Biryulyovo Passazhirskaya\n"
+                        "Stop Biryulyovo Passazhirskaya: 55.580999, 37.659164, 1200m to Biryulyovo Zapadnoye\n"
+                        "Bus 828: Biryulyovo Zapadnoye > Universam > Rossoshanskaya ulitsa > Biryulyovo Zapadnoye\n"
+                        "Stop Rossoshanskaya ulitsa: 55.595579, 37.605757\n"
+                        "Stop Prazhskaya: 55.611678, 37.603831\n"
+                        "6\n"
+                        "Bus 256\n"
+                        "Bus 750\n"
+                        "Bus 751\n"
+                        "Stop Samara\n"
+                        "Stop Prazhskaya\n"
+                        "Stop Biryulyovo Zapadnoye\n");
+    
+        
+    string expected = "Bus 256: 6 stops on route, 5 unique stops, 5950 route length, 1.361239 curvature\n"
+                        "Bus 750: 5 stops on route, 3 unique stops, 27600 route length, 1.318084 curvature\n"
+                        "Bus 751: not found\n"
+                        "Stop Samara: not found\n"
+                        "Stop Prazhskaya: no buses\n"
+                        "Stop Biryulyovo Zapadnoye: buses 256 828\n";
+    
+    TmCore tmc;
+    
+    stringstream ss;
+    tmc.ProcessAddQueries(tmc.ParseQueries<AddQuery>(input));
+    tmc.ProcessReadQueries(tmc.ParseQueries<ReadQuery>(input), ss);
+    
+    ASSERT_EQUAL(expected, ss.str());
+}
+
 void TestAll() {
     TestRunner tr;
     
@@ -176,7 +231,9 @@ void TestAll() {
     RUN_TEST(tr, TestDistance);
     RUN_TEST(tr, TestManagers);
     RUN_TEST(tr, TestParseQueries);
-    RUN_TEST(tr, TestCore);
-    RUN_TEST(tr, TestPartA);
-    RUN_TEST(tr, TestPartB);
+//     RUN_TEST(tr, TestCore);              //irrelevant since output format changed
+//     RUN_TEST(tr, TestPartA);
+//     RUN_TEST(tr, TestPartB);
+    RUN_TEST(tr, TestAddStopC);
+    RUN_TEST(tr, TestPartC);
 }

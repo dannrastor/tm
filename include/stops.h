@@ -19,20 +19,27 @@ struct Stop {
     double latitude;
     double longitude;
     std::set<string> buses_through;
+    std::unordered_map<string, int> distance_to;
 };
 
 class StopManager {
 public:
     double GetPhysicalDistance(const Stop& lhs, const Stop& rhs) const;
     double GetPhysicalDistance(const string& lhs, const string& rhs) const;
+    
+    int GetRoadDistance(const Stop& from, const Stop& to) const;
+    int GetRoadDistance(const string& from, const string& to) const;
 
     void AddStop(AddQuery query);
     void AddBusStats(AddQuery query);
     void PrintStopStats(string name, std::ostream& output);
     
     double CalculatePhysicalLength(const Bus& b) const;
+    int CalculateRoadLength(const Bus& b) const;
+    
+    std::optional<Stop> GetByName(string name) const;
     
 private:
-    std::optional<Stop> GetByName(string name) const;
+    
     std::unordered_map<string, Stop> all_stops;
 };

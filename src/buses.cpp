@@ -28,8 +28,6 @@ void BusManager::AddBus(AddQuery query) {
     buses[bus.number] = bus;
 }
 
-
-
 int BusManager::GetStopNumber(Bus b) const {
     int result = b.stops.size();
     if (b.route_type == RouteType::TWO_WAY) {
@@ -43,9 +41,7 @@ int BusManager::GetUniqueStopNumber(Bus b) const {
     return s.size();
 }
 
-
-
-void BusManager::PrintBusStats(string number, std::ostream& output, StopManager& sm) const {
+void BusManager::PrintBusStatsA(string number, std::ostream& output, StopManager& sm) const {
     output << "Bus " << number << ": ";
 
     auto bus_opt = GetByNumber(number);
@@ -54,6 +50,28 @@ void BusManager::PrintBusStats(string number, std::ostream& output, StopManager&
         output << GetStopNumber(*bus_opt) << " stops on route, ";
         output << GetUniqueStopNumber(*bus_opt) << " unique stops, ";
         output << setprecision(6) << sm.CalculatePhysicalLength(*bus_opt) << " route length\n";
+
+    } else {
+        output << "not found\n";
+    }
+    
+}
+
+void BusManager::PrintBusStatsC(string number, std::ostream& output, StopManager& sm) const {
+    output << "Bus " << number << ": ";
+
+    auto bus_opt = GetByNumber(number);
+       
+    if (bus_opt) {
+        output << GetStopNumber(*bus_opt) << " stops on route, ";
+        output << GetUniqueStopNumber(*bus_opt) << " unique stops, ";
+        
+        int road_length = sm.CalculateRoadLength(*bus_opt);
+        double physical_length = sm.CalculatePhysicalLength(*bus_opt);
+        double curvature = 1.0 * road_length / physical_length;
+        
+        output << road_length << " route length, ";
+        output << setprecision(7) << curvature << " curvature\n";
 
     } else {
         output << "not found\n";

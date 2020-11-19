@@ -24,18 +24,16 @@ struct Bus {
 
 class BusManager {
 public:
-
     
-
-    void PrintBusStats(string number, std::ostream& output, StopManager& sm) const;
-    
+    void PrintBusStatsA(string number, std::ostream& output, StopManager& sm) const;
+    void PrintBusStatsC(string number, std::ostream& output, StopManager& sm) const;     
     void AddBus(AddQuery query);
     
     
 private:
     std::optional<Bus> GetByNumber(string number) const;
     
-    //number should be valid
+
     int GetStopNumber(Bus b) const;
     int GetUniqueStopNumber(Bus b) const;
 

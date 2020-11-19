@@ -27,7 +27,7 @@ void TmCore::ProcessReadQueries(vector<ReadQuery> v, std::ostream& output) {
             case ReadQuery::Type::BUS:
             {
                 string number = q.GetName();
-                bm.PrintBusStats(number, output, sm);
+                bm.PrintBusStatsC(number, output, sm);
                 break;
             }
 
