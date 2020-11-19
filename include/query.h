@@ -8,7 +8,16 @@
 
 using std::string;
 
-class AddQuery {
+class Query {
+public:    
+    string GetName() const;
+
+protected:
+    string name;
+};
+
+
+class AddQuery : public Query {
 public:    
     enum class Type {
         BUS_ROUND_TRIP,
@@ -18,13 +27,22 @@ public:
     
     AddQuery(const string& input);
     Type GetType() const;
-    string GetName() const;
     std::vector<string> GetContents() const;
 
 private:
     Type type;
-    string name;
     std::vector<string> contents;
 };
 
+class ReadQuery : public Query{
+public:
+    enum class Type {
+        BUS
+    };
+    
+    ReadQuery(const string& input);
+    Type GetType() const;
 
+private:
+    Type type;
+};

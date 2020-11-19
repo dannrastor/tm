@@ -6,6 +6,11 @@
 
 using namespace std;
 
+string Query::GetName() const {
+    return name;
+}
+
+
 AddQuery::AddQuery(const string& input) {
     string_view s(input);
     
@@ -34,14 +39,26 @@ AddQuery::AddQuery(const string& input) {
     
 }
 
+
 AddQuery::Type AddQuery::GetType() const {
     return type;
 }
 
-string AddQuery::GetName() const {
-    return name;
-}
-
 vector<string> AddQuery::GetContents() const {
     return contents;
+}
+
+ReadQuery::ReadQuery(const string& input) {
+    string_view s(input);    
+    string_view query_type = ReadToken(s, " ");
+    name = string(s);
+    
+    if (query_type == "Bus") {
+        type = Type::BUS;
+    } 
+    
+}
+
+ReadQuery::Type ReadQuery::GetType() const {
+    return type;
 }
