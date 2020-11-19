@@ -56,7 +56,7 @@ void TestManagers() {
         
         stringstream ss;
         string expected = "Bus 1: 3 stops on route, 2 unique stops, 11119.5 route length\n";
-        bm.PrintBusStats(1, ss, sm);
+        bm.PrintBusStats("1", ss, sm);
         ASSERT_EQUAL(expected, ss.str());
     }
     

@@ -6,10 +6,14 @@
 #include "tests.h"
 
 
-int main() {
-    //TestAll();
+void PerformRoutine() {
     TmCore tmc;
     tmc.ProcessAddQueries(tmc.ParseQueries<AddQuery>(cin));
     tmc.ProcessReadQueries(tmc.ParseQueries<ReadQuery>(cin), cout);
+}
+
+int main() {
+    TestAll();
+    PerformRoutine();
     return 0;
 } 

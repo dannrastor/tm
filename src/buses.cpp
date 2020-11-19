@@ -6,7 +6,7 @@
 
 using namespace std;
 
-optional<Bus> BusManager::GetByNumber(int number) const {
+optional<Bus> BusManager::GetByNumber(string number) const {
     if (buses.count(number)) {
         auto result = make_optional(buses.at(number));
         return result;
@@ -17,7 +17,7 @@ optional<Bus> BusManager::GetByNumber(int number) const {
 
 void BusManager::AddBus(AddQuery query) {
     Bus bus;
-    bus.number = ConvertToInt(query.GetName());
+    bus.number = query.GetName();
     if (query.GetType() == AddQuery::Type::BUS_TWO_WAY) {
         bus.route_type = RouteType::TWO_WAY;
     } else if (query.GetType() == AddQuery::Type::BUS_ROUND_TRIP) {
@@ -60,7 +60,7 @@ double BusManager::GetRouteLength(Bus b, StopManager& sm) const {
     return result;
 }
 
-void BusManager::PrintBusStats(int number, std::ostream& output, StopManager& sm) const {
+void BusManager::PrintBusStats(string number, std::ostream& output, StopManager& sm) const {
     output << "Bus " << number << ": ";
 
     auto bus_opt = GetByNumber(number);
