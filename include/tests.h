@@ -262,7 +262,7 @@ void TestPartDInput() {
     tmc.ProcessAddQueries(queries.first);
     
     
-    tmc.ProcessReadQueries(queries.second, cout);
+    tmc.ProcessReadQueriesD(queries.second, cout);
 }
 
 void TestAll() {
@@ -276,8 +276,8 @@ void TestAll() {
 //     RUN_TEST(tr, TestPartA);
 //     RUN_TEST(tr, TestPartB);
     RUN_TEST(tr, TestAddStopC);
-    RUN_TEST(tr, TestPartC);
+//    RUN_TEST(tr, TestPartC);
     RUN_TEST(tr, TestLoadDefault);
     RUN_TEST(tr, TestJsonUpdate);
-    RUN_TEST(tr, TestPartDInput);
+//    RUN_TEST(tr, TestPartDInput);
 }

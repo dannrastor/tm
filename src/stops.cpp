@@ -112,6 +112,19 @@ void StopManager::PrintStopStats(string name, ostream& output) {
 }
 
 
+optional<StopManager::StopStats> StopManager::GetStopStats(string name) const {
+    auto stop_opt = GetByName(name);
+    
+    if (stop_opt) {
+        StopManager::StopStats stats;
+        stats.buses_through = stop_opt -> buses_through;
+        return stats;
+    } else {
+        return nullopt;
+    }
+}
+
+
 double StopManager::CalculatePhysicalLength(const Bus& b) const {
     auto it_b = b.stops.begin();
     auto it_e = b.stops.end();

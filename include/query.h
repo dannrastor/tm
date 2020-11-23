@@ -46,6 +46,7 @@ public:
     ReadQuery(const string& input);
     explicit ReadQuery(const Json::Node& node);
     Type GetType() const;
+    size_t GetId() const {return request_id;};
 
 private:
     size_t request_id;

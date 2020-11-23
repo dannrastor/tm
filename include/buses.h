@@ -25,10 +25,19 @@ struct Bus {
 class BusManager {
 public:
     
+    struct BusStats {
+        int stop_number;
+        int unique_stops;
+        int route_length;
+        double curvature;
+    };
+    
+    
     void PrintBusStatsA(string number, std::ostream& output, StopManager& sm) const;
     void PrintBusStatsC(string number, std::ostream& output, StopManager& sm) const;     
     void AddBus(AddQuery query);
     
+    std::optional<BusStats> GetBusStats(string number, StopManager& sm) const;
     
 private:
     std::optional<Bus> GetByNumber(string number) const;

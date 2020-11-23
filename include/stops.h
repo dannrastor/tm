@@ -24,6 +24,12 @@ struct Stop {
 
 class StopManager {
 public:
+    
+    struct StopStats {
+        std::set
+        <string> buses_through;
+    };
+    
     double GetPhysicalDistance(const Stop& lhs, const Stop& rhs) const;
     double GetPhysicalDistance(const string& lhs, const string& rhs) const;
     
@@ -38,6 +44,8 @@ public:
     int CalculateRoadLength(const Bus& b) const;
     
     std::optional<Stop> GetByName(string name) const;
+    
+    std::optional<StopStats> GetStopStats(string name) const;
     
 private:
     

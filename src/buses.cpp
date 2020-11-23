@@ -81,3 +81,26 @@ void BusManager::PrintBusStatsC(string number, std::ostream& output, StopManager
     }
     
 }
+
+optional<BusManager::BusStats> BusManager::GetBusStats(string number, StopManager& sm) const {
+    auto bus_opt = GetByNumber(number);
+    if (bus_opt) {
+        BusStats result;
+        
+        result.stop_number = GetStopNumber(*bus_opt);
+        result.unique_stops = GetUniqueStopNumber(*bus_opt);
+    
+        
+        int road_length = sm.CalculateRoadLength(*bus_opt);
+        double physical_length = sm.CalculatePhysicalLength(*bus_opt);
+        double curvature = 1.0 * road_length / physical_length;
+        
+        result.route_length = road_length;
+        result.curvature = curvature;
+        
+        return result;
+
+    } else {
+        return nullopt;
+    }
+};

@@ -32,6 +32,11 @@ public:
     
     void ProcessAddQueries(vector<AddQuery> v);
     void ProcessReadQueries(vector<ReadQuery> v, std::ostream& output);
+    void ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output);
+    
+    
+    Json::Node ProcessReadQuery(const ReadQuery& r);
+    
 private:
     StopManager sm;
     BusManager bm;

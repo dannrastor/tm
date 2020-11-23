@@ -8,8 +8,13 @@
 
 void PerformRoutine() {
     TmCore tmc;
-    tmc.ProcessAddQueries(tmc.ParseQueries<AddQuery>(cin));
-    tmc.ProcessReadQueries(tmc.ParseQueries<ReadQuery>(cin), cout);
+    auto doc = Json::Load(cin);
+    
+    auto queries = tmc.ParseQueriesFromJson(doc);
+    tmc.ProcessAddQueries(queries.first);
+    
+    
+    tmc.ProcessReadQueriesD(queries.second, cout);
 }
 
 int main() {

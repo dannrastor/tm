@@ -1,6 +1,8 @@
 #include "core.h"
 #include "input_parser.h"
 
+#include <iomanip>
+
 using namespace std;
 
 std::pair<vector<AddQuery>, vector<ReadQuery>> TmCore::ParseQueriesFromJson(const Json::Document doc) {
@@ -59,4 +61,73 @@ void TmCore::ProcessReadQueries(vector<ReadQuery> v, std::ostream& output) {
                 break;
         }
     }
+}
+
+void TmCore::ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output) {
+    
+    output << "[" << endl; 
+    
+    if (!v.empty()) {
+        cout << "{" << endl;
+    }
+    
+    
+    bool firstq = true;
+    for (auto& q : v) {
+        
+        
+        if(!firstq) {
+            output << "}," << endl << "{" << endl;
+        }
+        firstq = false;
+ 
+        
+        
+        
+        switch (q.GetType()) {
+            case ReadQuery::Type::BUS:
+            {
+                auto stats = bm.GetBusStats(q.GetName(), sm);
+                if (stats) {
+                    output << "\"stop_count\": " << stats->stop_number  << "," << endl;
+                    output << "\"unique_stop_count\": " << stats->unique_stops  << "," << endl;
+                    output << "\"route_length\": " << stats->route_length << ","<< endl;
+                    output << "\"curvature\": " << setprecision(6) << stats->curvature  << "," << endl;
+                } else {
+                    output << "\"error_message\": \"not found\""  << "," << endl;
+                }
+                break;
+            }
+
+            case ReadQuery::Type::STOP:
+                auto stats = sm.GetStopStats(q.GetName());
+                if (stats) {
+                   output << "\"buses\": [";
+                   
+                    bool first = true;
+                    for (auto b : stats->buses_through) {
+                        if (!first) {
+                            output << ", ";
+                        } 
+                        first = false;
+                        
+                        output << b;
+                    }
+                    output << "]," << endl;
+                    
+                } else {
+                    output << "\"error_message\": \"not found\"," << endl;
+                }
+                break;
+        }
+        
+        output << "\"request_id\": " << q.GetId() << endl;
+
+    }
+    
+    if (!v.empty()) {
+        cout << "}" << endl;
+    }
+    
+    output << "]" << endl;
 }
