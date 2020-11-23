@@ -111,7 +111,7 @@ void TmCore::ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output) {
                         } 
                         first = false;
                         
-                        output << b;
+                        output << "\"" << b << "\"";
                     }
                     output << "]," << endl;
                     

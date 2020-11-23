@@ -278,6 +278,6 @@ void TestAll() {
     RUN_TEST(tr, TestAddStopC);
 //    RUN_TEST(tr, TestPartC);
     RUN_TEST(tr, TestLoadDefault);
-    RUN_TEST(tr, TestJsonUpdate);
+   RUN_TEST(tr, TestJsonUpdate);
 //    RUN_TEST(tr, TestPartDInput);
 }
