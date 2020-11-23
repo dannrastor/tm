@@ -3,6 +3,7 @@
 #include "json.h"
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
 using namespace std;
@@ -57,10 +58,20 @@ AddQuery::AddQuery(const Json::Node& node) {
     name = query_map.at("name").AsString();
     
     if (type == Type::STOP) {
-        //contents.push_back(to_string(Json::AsFloat(query_map.at("latitude"))));
-        //contents.push_back(to_string(Json::AsFloat(query_map.at("longitude"))));
+        contents.push_back(to_string(query_map.at("latitude").AsDouble()));
+        contents.push_back(to_string(query_map.at("longitude").AsDouble()));
         
-        //for (auto [destination, va])
+        for (auto [destination, distance] : query_map.at("road_distances").AsMap()) {
+            stringstream ss;
+            ss << distance.AsInt();
+            ss << "m to ";
+            ss << destination;
+            contents.push_back(ss.str());
+        }
+    } else {
+        for (auto& stop : query_map.at("stops").AsArray()) {
+            contents.push_back(stop.AsString());
+        }
     }
     
 }

@@ -249,6 +249,22 @@ void TestJsonUpdate() {
 }
 
 
+void TestPartDInput() {
+    TmCore tmc;
+    ifstream input("./testtexts/partD_input.json");
+    auto doc = Json::Load(input);
+    
+    auto queries = tmc.ParseQueriesFromJson(doc);
+    
+    ASSERT_EQUAL(13, queries.first.size());
+    ASSERT_EQUAL(6, queries.second.size());
+    
+    tmc.ProcessAddQueries(queries.first);
+    
+    
+    tmc.ProcessReadQueries(queries.second, cout);
+}
+
 void TestAll() {
     TestRunner tr;
     
@@ -263,4 +279,5 @@ void TestAll() {
     RUN_TEST(tr, TestPartC);
     RUN_TEST(tr, TestLoadDefault);
     RUN_TEST(tr, TestJsonUpdate);
+    RUN_TEST(tr, TestPartDInput);
 }

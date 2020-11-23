@@ -61,10 +61,13 @@ void BusManager::PrintBusStatsC(string number, std::ostream& output, StopManager
     output << "Bus " << number << ": ";
 
     auto bus_opt = GetByNumber(number);
-       
+    
+
+    
     if (bus_opt) {
         output << GetStopNumber(*bus_opt) << " stops on route, ";
         output << GetUniqueStopNumber(*bus_opt) << " unique stops, ";
+    
         
         int road_length = sm.CalculateRoadLength(*bus_opt);
         double physical_length = sm.CalculatePhysicalLength(*bus_opt);
