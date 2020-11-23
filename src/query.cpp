@@ -1,5 +1,6 @@
 #include "query.h"
 #include "input_parser.h"
+#include "json.h"
 
 #include <iostream>
 #include <string>
@@ -39,6 +40,31 @@ AddQuery::AddQuery(const string& input) {
     
 }
 
+AddQuery::AddQuery(const Json::Node& node) {
+    auto query_map = node.AsMap();
+    
+    string query_type = query_map.at("type").AsString();
+    if (query_type == "Bus") {
+        if (query_map.at("is_roundtrip").AsBool()) {
+            type = Type::BUS_ROUND_TRIP;
+        } else {
+            type = Type::BUS_TWO_WAY;
+        }
+    } else if (query_type == "Stop") {
+        type = Type::STOP;
+    }
+    
+    name = query_map.at("name").AsString();
+    
+    if (type == Type::STOP) {
+        //contents.push_back(to_string(Json::AsFloat(query_map.at("latitude"))));
+        //contents.push_back(to_string(Json::AsFloat(query_map.at("longitude"))));
+        
+        //for (auto [destination, va])
+    }
+    
+}
+
 
 AddQuery::Type AddQuery::GetType() const {
     return type;
@@ -59,6 +85,21 @@ ReadQuery::ReadQuery(const string& input) {
         type = Type::STOP;
     }
     
+}
+
+
+ReadQuery::ReadQuery(const Json::Node& node) {
+    auto query_map = node.AsMap();
+    
+    string query_type = query_map.at("type").AsString();
+    if (query_type == "Bus") {
+        type = Type::BUS;
+    } else if (query_type == "Stop") {
+        type = Type::STOP;
+    }
+    
+    name = query_map.at("name").AsString();
+    request_id = query_map.at("id").AsInt();
 }
 
 ReadQuery::Type ReadQuery::GetType() const {

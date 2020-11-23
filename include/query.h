@@ -1,6 +1,7 @@
 #pragma once
 
 #include "query.h"
+#include "json.h"
 
 #include<string>
 #include<string_view>
@@ -26,6 +27,7 @@ public:
     };
     
     AddQuery(const string& input);
+    explicit AddQuery(const Json::Node& nd);
     Type GetType() const;
     std::vector<string> GetContents() const;
 
@@ -42,8 +44,10 @@ public:
     };
     
     ReadQuery(const string& input);
+    explicit ReadQuery(const Json::Node& node);
     Type GetType() const;
 
 private:
+    size_t request_id;
     Type type;
 };

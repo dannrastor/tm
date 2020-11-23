@@ -3,8 +3,10 @@
 #include "buses.h"
 #include "stops.h"
 #include "query.h"
+#include "json.h"
 
 #include <memory>
+#include <utility>
 
 using std::shared_ptr;
 using std::vector;
@@ -25,6 +27,9 @@ public:
         }
         return result;
     }
+    
+    std::pair<vector<AddQuery>, vector<ReadQuery>> ParseQueriesFromJson(const Json::Document doc);
+    
     void ProcessAddQueries(vector<AddQuery> v);
     void ProcessReadQueries(vector<ReadQuery> v, std::ostream& output);
 private:

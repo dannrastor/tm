@@ -1,0 +1,6 @@
+{
+    "int10" : 10,
+    "float03" : 0.33,
+    "float06" : 0.66,
+    "boolarray" : [true, false]
+}

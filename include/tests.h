@@ -4,7 +4,9 @@
 #include "stops.h"
 #include "buses.h"
 #include "core.h"
+#include "json.h"
 
+#include<fstream>
 
 void TestAddQueryConstructor() {
     {
@@ -49,10 +51,10 @@ void TestManagers() {
         BusManager bm;
         StopManager sm;
         
-        bm.AddBus(AddQuery("Bus 1: A > B > A"));
+        bm.AddBus(AddQuery("Bus 1: A > B > A"s));
         
-        sm.AddStop(AddQuery("Stop A: 0.0, 0.0"));
-        sm.AddStop(AddQuery("Stop B: 0.0, 0.05"));
+        sm.AddStop(AddQuery("Stop A: 0.0, 0.0"s));
+        sm.AddStop(AddQuery("Stop B: 0.0, 0.05"s));
         
         stringstream ss;
         string expected = "Bus 1: 3 stops on route, 2 unique stops, 11119.5 route length\n";
@@ -172,8 +174,8 @@ void TestPartB() {
 void TestAddStopC() {
     StopManager sm;
     
-    sm.AddBusStats(AddQuery("Bus 1: A - B"));
-    sm.AddStop(AddQuery("Stop A: 1.0, 2.0, 10m to C, 20m to D"));
+    sm.AddBusStats(AddQuery("Bus 1: A - B"s));
+    sm.AddStop(AddQuery("Stop A: 1.0, 2.0, 10m to C, 20m to D"s));
     
     auto stop = *(sm.GetByName("A"));
     ASSERT_EQUAL(stop.name, "A");
@@ -224,6 +226,29 @@ void TestPartC() {
     ASSERT_EQUAL(expected, ss.str());
 }
 
+void TestLoadDefault() {
+    ifstream input("./testtexts/partD_input.json");
+    auto doc = Json::Load(input);
+    auto mp = doc.GetRoot().AsMap();
+    ASSERT(mp.count("base_requests"));
+    ASSERT(mp.count("stat_requests"));
+}
+
+void TestJsonUpdate() {
+    ifstream input("./testtexts/boolfloat.json");
+    
+    auto doc = Json::Load(input);
+
+    auto m = doc.GetRoot().AsMap();
+    ASSERT_EQUAL(10, m["int10"].AsInt());
+    ASSERT_EQUAL(0.33, m["float03"].AsDouble());
+    ASSERT_EQUAL(0.66, m["float06"].AsDouble());
+    auto a = m["boolarray"].AsArray();
+    ASSERT(a[0].AsBool());
+    ASSERT(!a[1].AsBool());
+}
+
+
 void TestAll() {
     TestRunner tr;
     
@@ -236,4 +261,6 @@ void TestAll() {
 //     RUN_TEST(tr, TestPartB);
     RUN_TEST(tr, TestAddStopC);
     RUN_TEST(tr, TestPartC);
+    RUN_TEST(tr, TestLoadDefault);
+    RUN_TEST(tr, TestJsonUpdate);
 }
