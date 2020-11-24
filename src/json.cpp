@@ -71,8 +71,9 @@ namespace Json {
   
   Node LoadNumber(istream& input) {
     string s;
-    while ((input.peek() == '.') || (isdigit(input.peek()))) {
+    while ((input.peek() == '.') || (input.peek() == '-') || (isdigit(input.peek()))) {
       s.push_back(input.get());
+      //cout << s << endl;
     }
     return Node(stod(s));
   }
@@ -89,7 +90,7 @@ namespace Json {
       return LoadString(input);
     } else {
       input.putback(c);
-      if (isdigit(c)) {
+      if (isdigit(c) || c == '-') {
         return LoadNumber(input);
       } else {
         return LoadBool(input);

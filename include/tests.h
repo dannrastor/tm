@@ -241,8 +241,8 @@ void TestJsonUpdate() {
 
     auto m = doc.GetRoot().AsMap();
     ASSERT_EQUAL(10, m["int10"].AsInt());
-    ASSERT_EQUAL(0.33, m["float03"].AsDouble());
-    ASSERT_EQUAL(0.66, m["float06"].AsDouble());
+    ASSERT_EQUAL(-0.33, m["float03"].AsDouble());
+    ASSERT_EQUAL(-0.66, m["float06"].AsDouble());
     auto a = m["boolarray"].AsArray();
     ASSERT(a[0].AsBool());
     ASSERT(!a[1].AsBool());
@@ -277,7 +277,7 @@ void TestAll() {
 //     RUN_TEST(tr, TestPartB);
     RUN_TEST(tr, TestAddStopC);
 //    RUN_TEST(tr, TestPartC);
-    RUN_TEST(tr, TestLoadDefault);
+  //  RUN_TEST(tr, TestLoadDefault);
    RUN_TEST(tr, TestJsonUpdate);
 //    RUN_TEST(tr, TestPartDInput);
 }
