@@ -9,6 +9,10 @@ std::pair<vector<AddQuery>, vector<ReadQuery>> TmCore::ParseQueriesFromJson(cons
     vector<AddQuery> aqs;
     vector<ReadQuery> rqs;
     
+    bus_speed = doc.GetRoot().AsMap().at("routing_settings").AsMap().at("bus_velocity").AsDouble();
+    wait_time = doc.GetRoot().AsMap().at("routing_settings").AsMap().at("bus_wait_time").AsInt();
+    
+    
     auto aqs_nodearray = doc.GetRoot().AsMap().at("base_requests").AsArray();
     auto rqs_nodearray = doc.GetRoot().AsMap().at("stat_requests").AsArray();
     

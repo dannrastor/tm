@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <deque>
 #include <vector>
+#include <string>
 
 template <typename It>
 class Range {
@@ -28,6 +29,8 @@ namespace Graph {
     VertexId from;
     VertexId to;
     Weight weight;
+    string bus;
+    int span_count;    
   };
 
   template <typename Weight>

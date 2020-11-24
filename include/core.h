@@ -4,6 +4,8 @@
 #include "stops.h"
 #include "query.h"
 #include "json.h"
+#include "graph.h"
+#include "router.h"
 
 #include <memory>
 #include <utility>
@@ -40,4 +42,11 @@ public:
 private:
     StopManager sm;
     BusManager bm;
+    
+    int wait_time;
+    double bus_speed;
+    
+    std::optional<Graph::DirectedWeightedGraph<double>> graph;
+    std::optional<Graph::Router<double>> router;
+    
 };

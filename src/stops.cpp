@@ -44,7 +44,9 @@ void StopManager::AddStop(AddQuery query) {
         all_stops[name].latitude = lat;
         all_stops[name].longitude = lon;
     } else {
-        all_stops[name] = {name, lat, lon, {}, {}};
+        size_t id = all_stops.size();
+        all_stops[name] = {name, lat, lon, {}, {}, id};
+        name_by_id.push_back(name);
         //auto& contents = query.GetContents();
     }
     
@@ -73,7 +75,9 @@ void StopManager::AddBusStats(AddQuery query) {
     
     for (auto& name : query.GetContents()) {
         if (!all_stops.count(name)) {
-            all_stops[name] = {name, 0.0, 0.0, {}};
+            size_t id = all_stops.size();
+            all_stops[name] = {name, 0.0, 0.0, {}, {}, id};
+            name_by_id.push_back(name);
         }
         all_stops[name].buses_through.insert(number);
     }

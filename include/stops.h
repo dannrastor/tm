@@ -1,6 +1,9 @@
 #pragma once
 
 #include "query.h"
+#include "graph.h"
+#include "router.h"
+
 //#include "buses.h"
 
 #include<string> 
@@ -8,6 +11,9 @@
 #include<iostream>
 #include<set>
 #include<optional>
+#include<vector>
+
+
 
 using std::string;
 using std::istream;
@@ -20,14 +26,14 @@ struct Stop {
     double longitude;
     std::set<string> buses_through;
     std::unordered_map<string, int> distance_to;
+    size_t id;
 };
 
 class StopManager {
 public:
     
     struct StopStats {
-        std::set
-        <string> buses_through;
+        std::set<string> buses_through;
     };
     
     double GetPhysicalDistance(const Stop& lhs, const Stop& rhs) const;
@@ -50,4 +56,7 @@ public:
 private:
     
     std::unordered_map<string, Stop> all_stops;
+    std::vector<string> name_by_id;
+    
+
 };
