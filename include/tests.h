@@ -289,9 +289,9 @@ void TestReadRouteInput() {
     
 }
 
-void TestE1() {
+void TestE() {
     TmCore tmc;
-    ifstream input("./testtexts/E1.json");
+    ifstream input("./testtexts/E2.json");
     auto doc = Json::Load(input);
     
     auto queries = tmc.ParseQueriesFromJson(doc);
@@ -321,5 +321,5 @@ void TestAll() {
    RUN_TEST(tr, TestJsonUpdate);
 //    RUN_TEST(tr, TestPartDInput);
    RUN_TEST(tr, TestStopIds);
-   RUN_TEST(tr, TestE1);
+   RUN_TEST(tr, TestE);
 }

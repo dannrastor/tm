@@ -4,6 +4,7 @@
 
 #include <iomanip>
 #include <iterator>
+#include <utility>
 
 using namespace std;
 
@@ -26,12 +27,14 @@ std::pair<vector<AddQuery>, vector<ReadQuery>> TmCore::ParseQueriesFromJson(cons
         rqs.push_back(ReadQuery(node));
     }
     
-    return {aqs, rqs};
+    pair<vector<AddQuery>, vector<ReadQuery>> result = {move(aqs), move(rqs)};
+    
+    return move(result);
 }
 
 
 
-void TmCore::ProcessAddQueries(vector<AddQuery> v) {
+void TmCore::ProcessAddQueries(const vector<AddQuery>& v) {
     for (auto& q : v) {
         switch (q.GetType()) {
             case AddQuery::Type::STOP:
@@ -49,7 +52,7 @@ void TmCore::ProcessAddQueries(vector<AddQuery> v) {
     }
 }
 
-void TmCore::ProcessReadQueries(vector<ReadQuery> v, std::ostream& output) {
+void TmCore::ProcessReadQueries(const vector<ReadQuery>& v, std::ostream& output) {
     
     for (auto& q : v) {
         
@@ -69,12 +72,12 @@ void TmCore::ProcessReadQueries(vector<ReadQuery> v, std::ostream& output) {
     }
 }
 
-void TmCore::ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output) {
+void TmCore::ProcessReadQueriesD(const vector<ReadQuery>& v, std::ostream& output) {
     
-    output << "[" << endl; 
+    output << "[" << "\n"; 
     
     if (!v.empty()) {
-        cout << "{" << endl;
+        cout << "{" << "\n";
     }
     
     
@@ -83,7 +86,7 @@ void TmCore::ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output) {
         
         
         if(!firstq) {
-            output << "}," << endl << "{" << endl;
+            output << "}," << "\n" << "{" << "\n";
         }
         firstq = false;
  
@@ -95,12 +98,12 @@ void TmCore::ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output) {
             {
                 auto stats = bm.GetBusStats(q.GetName(), sm);
                 if (stats) {
-                    output << "\"stop_count\": " << stats->stop_number  << "," << endl;
-                    output << "\"unique_stop_count\": " << stats->unique_stops  << "," << endl;
-                    output << "\"route_length\": " << stats->route_length << ","<< endl;
-                    output << "\"curvature\": " << setprecision(6) << stats->curvature  << "," << endl;
+                    output << "\"stop_count\": " << stats->stop_number  << "," << "\n";
+                    output << "\"unique_stop_count\": " << stats->unique_stops  << "," << "\n";
+                    output << "\"route_length\": " << stats->route_length << ","<< "\n";
+                    output << "\"curvature\": " << setprecision(6) << stats->curvature  << "," << "\n";
                 } else {
-                    output << "\"error_message\": \"not found\""  << "," << endl;
+                    output << "\"error_message\": \"not found\""  << "," << "\n";
                 }
                 break;
             }
@@ -120,10 +123,10 @@ void TmCore::ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output) {
                         
                         output << "\"" << b << "\"";
                     }
-                    output << "]," << endl;
+                    output << "]," << "\n";
                     
                 } else {
-                    output << "\"error_message\": \"not found\"," << endl;
+                    output << "\"error_message\": \"not found\"," << "\n";
                 }
                 break;
             }
@@ -135,31 +138,36 @@ void TmCore::ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output) {
                 size_t to_id = sm.GetByName(stops.second)->id;
                 auto route = router->BuildRoute(from_id, to_id);
                 if (route) {
-                    //cout << "BUILD!!! edge_count=" << route->edge_count << " time=" << route->weight << endl;
-                    output << "\"items\": [" << endl;
+                    //cout << "BUILD!!! edge_count=" << route->edge_count << " time=" << route->weight << "\n";
+                    output << "\"total_time\": " << route->weight << "," << "\n"; 
+                    output << "\"items\": [" << "\n";
                     for (int i = 0; i < route->edge_count; ++i) {
                         auto edge = graph->GetEdge(router->GetRouteEdge(route->id, i));
                         
-                        output << "{" << endl;
-                        output << "\"type\": \"Wait\"," << endl;
-                        output << "\"time\": " << wait_time << "," << endl;
-                        output << "\"stop_name\": " << sm.GetIdList()[edge.from] << endl;
-                        output << "}," << endl;
+                        output << "{" << "\n";
+                        output << "\"type\": \"Wait\"," << "\n";
+                        output << "\"time\": " << wait_time << "," << "\n";
+                        output << "\"stop_name\": " << "\"" << sm.GetIdList()[edge.from] << "\"" << "\n";
+                        output << "}," << "\n";
                         
-                        output << "{" << endl;
-                        output << "\"type\": \"Bus\"," << endl;
-                        output << "\"time\": " << edge.weight - wait_time << "," << endl;
-                        output << "\"span_count\": " << edge.span_count << endl;
-                        output << "\"bus\": " << edge.bus << endl;
-                        output << "}," << endl;
+                        output << "{" << "\n";
+                        output << "\"type\": \"Bus\"," << "\n";
+                        output << "\"time\": " << edge.weight - wait_time << "," << "\n";
+                        output << "\"span_count\": " << edge.span_count << "," << "\n";
+                        output << "\"bus\": " << "\"" << edge.bus << "\"" << "\n";
+                        output << "}";
+                        if (i != route->edge_count - 1) {
+                            output << ",";
+                        }
+                        output << "\n";
                         
                         
                     }
-                    output << "]," << endl;
+                    output << "]," << "\n";
                     router->ReleaseRoute(route->id);
                 } else {
-                    output << "\"error_message\": \"not found\"," << endl;
-                    //cout << "ROUTE NOT FOUND" << endl;
+                    output << "\"error_message\": \"not found\"," << "\n";
+                    //cout << "ROUTE NOT FOUND" << "\n";
                 }
                 
                 break;
@@ -167,15 +175,15 @@ void TmCore::ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output) {
                 
         }
         
-        output << "\"request_id\": " << q.GetId() << endl;
+        output << "\"request_id\": " << q.GetId() << "\n";
 
     }
     
     if (!v.empty()) {
-        cout << "}" << endl;
+        cout << "}" << "\n";
     }
     
-    output << "]" << endl;
+    output << "]" << "\n";
 }
 
 
@@ -195,7 +203,7 @@ void TmCore::AddStopSequenceToGraph(vector<string> stops, string bus) {
             }
             graph->AddEdge(edge);
             
-            //cout << "adding bus" << bus << " " << *it_begin << "(" << edge.from << ") - " << *(it_end) << "(" << edge.to << ")" << endl;
+            //cout << "adding bus" << bus << " " << *it_begin << "(" << edge.from << ") - " << *(it_end) << "(" << edge.to << ")" << "\n";
         }
     }
 }

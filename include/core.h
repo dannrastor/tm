@@ -34,9 +34,9 @@ public:
     
     std::pair<vector<AddQuery>, vector<ReadQuery>> ParseQueriesFromJson(const Json::Document doc);
     
-    void ProcessAddQueries(vector<AddQuery> v);
-    void ProcessReadQueries(vector<ReadQuery> v, std::ostream& output);
-    void ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output);
+    void ProcessAddQueries(const vector<AddQuery>& v);
+    void ProcessReadQueries(const vector<ReadQuery>& v, std::ostream& output);
+    void ProcessReadQueriesD(const vector<ReadQuery>& v, std::ostream& output);
     
     void BuildRouter();
     

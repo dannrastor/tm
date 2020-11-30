@@ -11,14 +11,16 @@ void PerformRoutine() {
     auto doc = Json::Load(cin);
     
     auto queries = tmc.ParseQueriesFromJson(doc);
-    tmc.ProcessAddQueries(queries.first);
+    tmc.ProcessAddQueries(move(queries.first));
+    tmc.BuildRouter();
     
-    
-    tmc.ProcessReadQueriesD(queries.second, cout);
+    tmc.ProcessReadQueriesD(move(queries.second), cout);
 }
 
 int main() {
-    TestAll();
-    //PerformRoutine();
+    cin.tie (nullptr);
+    ios_base::sync_with_stdio(false);
+    //TestAll();
+    PerformRoutine();
     return 0;
 } 
