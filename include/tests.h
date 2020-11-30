@@ -285,6 +285,26 @@ void TestStopIds() {
     
 }
 
+void TestReadRouteInput() {
+    
+}
+
+void TestE1() {
+    TmCore tmc;
+    ifstream input("./testtexts/E1.json");
+    auto doc = Json::Load(input);
+    
+    auto queries = tmc.ParseQueriesFromJson(doc);
+    
+    tmc.ProcessAddQueries(queries.first);
+    tmc.BuildRouter();
+    
+    tmc.ProcessReadQueriesD(queries.second, cout);
+}
+
+
+
+
 void TestAll() {
     TestRunner tr;
     
@@ -301,4 +321,5 @@ void TestAll() {
    RUN_TEST(tr, TestJsonUpdate);
 //    RUN_TEST(tr, TestPartDInput);
    RUN_TEST(tr, TestStopIds);
+   RUN_TEST(tr, TestE1);
 }

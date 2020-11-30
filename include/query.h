@@ -6,6 +6,7 @@
 #include<string>
 #include<string_view>
 #include<vector>
+#include<utility>
 
 using std::string;
 
@@ -40,15 +41,18 @@ class ReadQuery : public Query{
 public:
     enum class Type {
         BUS,
-        STOP
+        STOP,
+        ROUTE
     };
     
     ReadQuery(const string& input);
     explicit ReadQuery(const Json::Node& node);
     Type GetType() const;
     size_t GetId() const {return request_id;};
+    std::pair<string, string> GetContents() const {return contents;};
 
 private:
     size_t request_id;
     Type type;
+    std::pair<string, string> contents;
 };

@@ -38,7 +38,7 @@ public:
     void ProcessReadQueries(vector<ReadQuery> v, std::ostream& output);
     void ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output);
     
-    
+    void BuildRouter();
     
     Json::Node ProcessReadQuery(const ReadQuery& r);
     
@@ -53,7 +53,7 @@ private:
     double bus_speed;
     
     
-    void BuildRouter();
+
     
     std::shared_ptr<Graph::DirectedWeightedGraph<double>> graph;
     std::shared_ptr<Graph::Router<double>> router;

@@ -106,6 +106,7 @@ void TmCore::ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output) {
             }
 
             case ReadQuery::Type::STOP:
+            {
                 auto stats = sm.GetStopStats(q.GetName());
                 if (stats) {
                    output << "\"buses\": [";
@@ -125,6 +126,24 @@ void TmCore::ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output) {
                     output << "\"error_message\": \"not found\"," << endl;
                 }
                 break;
+            }
+                
+            case ReadQuery::Type::ROUTE:
+            {
+                auto stops = q.GetContents();
+                size_t from_id = sm.GetByName(stops.first)->id;
+                size_t to_id = sm.GetByName(stops.second)->id;
+                auto route = router->BuildRoute(from_id, to_id);
+                if (route) {
+                    cout << "BUILD!!! edge_count=" << route->edge_count << " time=" << route->weight << endl;
+                    router->ReleaseRoute(route->id);
+                } else {
+                    cout << "ROUTE NOT FOUND" << endl;
+                }
+                
+                break;
+            }
+                
         }
         
         output << "\"request_id\": " << q.GetId() << endl;
@@ -145,15 +164,17 @@ void TmCore::AddStopSequenceToGraph(vector<string> stops, string bus) {
         for (auto it_end = next(it_begin); it_end != end(stops); ++it_end) {
             Graph::Edge<double> edge;
             edge.from = sm.GetByName(*it_begin)->id;
-            edge.to = sm.GetByName(*prev(it_end))->id;
+            edge.to = sm.GetByName(*(it_end))->id;
             edge.span_count = it_end - it_begin;
             edge.weight = wait_time;
             edge.bus = bus;
-            for (auto it_stop = it_begin; it_stop != prev(it_end); ++it_stop) {
+            for (auto it_stop = it_begin; it_stop != it_end; ++it_stop) {
                 double distance = sm.GetRoadDistance(*it_stop, *next(it_stop));
                 edge.weight += distance / (bus_speed * 1000 / 60);
             }
             graph->AddEdge(edge);
+            
+            cout << "adding bus" << bus << " " << *it_begin << "(" << edge.from << ") - " << *(it_end) << "(" << edge.to << ")" << endl;
         }
     }
 }

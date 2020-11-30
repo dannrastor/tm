@@ -105,11 +105,17 @@ ReadQuery::ReadQuery(const Json::Node& node) {
     string query_type = query_map.at("type").AsString();
     if (query_type == "Bus") {
         type = Type::BUS;
+        name = query_map.at("name").AsString();
     } else if (query_type == "Stop") {
         type = Type::STOP;
+        name = query_map.at("name").AsString();
+    } else if (query_type == "Route") {
+        type = Type::ROUTE;
+        contents.first = query_map.at("from").AsString();
+        contents.second = query_map.at("to").AsString();
     }
     
-    name = query_map.at("name").AsString();
+    
     request_id = query_map.at("id").AsInt();
 }
 
