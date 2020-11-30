@@ -18,7 +18,7 @@ void PerformRoutine() {
 }
 
 int main() {
-    //TestAll();
-    PerformRoutine();
+    TestAll();
+    //PerformRoutine();
     return 0;
 } 

@@ -7,6 +7,8 @@
 #include "graph.h"
 #include "router.h"
 
+
+#include <optional>
 #include <memory>
 #include <utility>
 
@@ -37,14 +39,21 @@ public:
     void ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output);
     
     
+    
     Json::Node ProcessReadQuery(const ReadQuery& r);
     
 private:
+    
+    void AddStopSequenceToGraph(vector<string> stops, string bus, Graph::DirectedWeightedGraph<double>& graph);
+    
     StopManager sm;
     BusManager bm;
     
     int wait_time;
     double bus_speed;
+    
+    
+    void BuildRouter();
     
     std::optional<Graph::DirectedWeightedGraph<double>> graph;
     std::optional<Graph::Router<double>> router;

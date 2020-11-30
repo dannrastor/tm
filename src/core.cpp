@@ -1,5 +1,6 @@
 #include "core.h"
 #include "input_parser.h"
+#include "graph.h"
 
 #include <iomanip>
 
@@ -134,4 +135,30 @@ void TmCore::ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output) {
     }
     
     output << "]" << endl;
+}
+
+
+void TmCore::AddStopSequenceToGraph(vector<string> stops, string bus, Graph::DirectedWeightedGraph<double>& graph) {
+    
+    for (auto it_begin = begin(stops); it_begin != prev(end(stops)); ++it_begin) {
+        for (auto it_end = next(it_begin); it_end != end(stops); ++it_end) {
+            Graph::Edge<double> edge;
+            edge.from = sm.GetByName(*it_begin)->id;
+            edge.to = sm.GetByName(*prev(it_end))->id;
+            edge.span_count = it_end - it_begin;
+            edge.weight = wait_time;
+            edge.bus = bus;
+            for (auto it_stop = it_begin; it_stop != prev(it_end); ++it_stop) {
+                double distance = sm.GetRoadDistance(*it_stop, *next(it_stop));
+                edge.weight += distance / bus_speed;
+            }
+            graph.AddEdge(edge);
+        }
+    }
+}
+
+
+void TmCore::BuildRouter() {
+    graph = make_optional(sm.GetIdList().size());
+    
 }

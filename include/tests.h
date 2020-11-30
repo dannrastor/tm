@@ -7,6 +7,7 @@
 #include "json.h"
 
 #include<fstream>
+#include<vector>
 
 void TestAddQueryConstructor() {
     {
@@ -265,6 +266,25 @@ void TestPartDInput() {
     tmc.ProcessReadQueriesD(queries.second, cout);
 }
 
+void TestStopIds() {
+    StopManager sm;
+    
+    
+    sm.AddStop(AddQuery("Stop C: 0.0, 0.0"s));
+    sm.AddBusStats(AddQuery("Bus 1: A - B"s));
+    sm.AddStop(AddQuery("Stop A: 1.0, 2.0, 10m to C, 20m to D"s));
+    
+    
+    ASSERT_EQUAL(sm.GetByName("C")->id, 0);
+    ASSERT_EQUAL(sm.GetByName("A")->id, 1);
+    ASSERT_EQUAL(sm.GetByName("B")->id, 2);
+    
+    vector<string> expected_ids = {"C", "A", "B"};
+    
+    ASSERT_EQUAL(sm.GetIdList(), expected_ids);
+    
+}
+
 void TestAll() {
     TestRunner tr;
     
@@ -280,4 +300,5 @@ void TestAll() {
   //  RUN_TEST(tr, TestLoadDefault);
    RUN_TEST(tr, TestJsonUpdate);
 //    RUN_TEST(tr, TestPartDInput);
+   RUN_TEST(tr, TestStopIds);
 }

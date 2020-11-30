@@ -39,6 +39,8 @@ public:
     
     std::optional<BusStats> GetBusStats(string number, StopManager& sm) const;
     
+    const std::unordered_map<string, Bus>& GetBuses() const { return buses; }; 
+    
 private:
     std::optional<Bus> GetByNumber(string number) const;
     

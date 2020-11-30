@@ -53,10 +53,14 @@ public:
     
     std::optional<StopStats> GetStopStats(string name) const;
     
+    const std::vector<string>& GetIdList() const { return name_by_id; };
+    
+    
 private:
     
     std::unordered_map<string, Stop> all_stops;
     std::vector<string> name_by_id;
+
     
 
 };
