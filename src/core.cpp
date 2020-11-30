@@ -135,10 +135,31 @@ void TmCore::ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output) {
                 size_t to_id = sm.GetByName(stops.second)->id;
                 auto route = router->BuildRoute(from_id, to_id);
                 if (route) {
-                    cout << "BUILD!!! edge_count=" << route->edge_count << " time=" << route->weight << endl;
+                    //cout << "BUILD!!! edge_count=" << route->edge_count << " time=" << route->weight << endl;
+                    output << "\"items\": [" << endl;
+                    for (int i = 0; i < route->edge_count; ++i) {
+                        auto edge = graph->GetEdge(router->GetRouteEdge(route->id, i));
+                        
+                        output << "{" << endl;
+                        output << "\"type\": \"Wait\"," << endl;
+                        output << "\"time\": " << wait_time << "," << endl;
+                        output << "\"stop_name\": " << sm.GetIdList()[edge.from] << endl;
+                        output << "}," << endl;
+                        
+                        output << "{" << endl;
+                        output << "\"type\": \"Bus\"," << endl;
+                        output << "\"time\": " << edge.weight - wait_time << "," << endl;
+                        output << "\"span_count\": " << edge.span_count << endl;
+                        output << "\"bus\": " << edge.bus << endl;
+                        output << "}," << endl;
+                        
+                        
+                    }
+                    output << "]," << endl;
                     router->ReleaseRoute(route->id);
                 } else {
-                    cout << "ROUTE NOT FOUND" << endl;
+                    output << "\"error_message\": \"not found\"," << endl;
+                    //cout << "ROUTE NOT FOUND" << endl;
                 }
                 
                 break;
@@ -174,7 +195,7 @@ void TmCore::AddStopSequenceToGraph(vector<string> stops, string bus) {
             }
             graph->AddEdge(edge);
             
-            cout << "adding bus" << bus << " " << *it_begin << "(" << edge.from << ") - " << *(it_end) << "(" << edge.to << ")" << endl;
+            //cout << "adding bus" << bus << " " << *it_begin << "(" << edge.from << ") - " << *(it_end) << "(" << edge.to << ")" << endl;
         }
     }
 }
