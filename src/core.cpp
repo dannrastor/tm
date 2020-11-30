@@ -3,6 +3,7 @@
 #include "graph.h"
 
 #include <iomanip>
+#include <iterator>
 
 using namespace std;
 
@@ -138,7 +139,7 @@ void TmCore::ProcessReadQueriesD(vector<ReadQuery> v, std::ostream& output) {
 }
 
 
-void TmCore::AddStopSequenceToGraph(vector<string> stops, string bus, Graph::DirectedWeightedGraph<double>& graph) {
+void TmCore::AddStopSequenceToGraph(vector<string> stops, string bus) {
     
     for (auto it_begin = begin(stops); it_begin != prev(end(stops)); ++it_begin) {
         for (auto it_end = next(it_begin); it_end != end(stops); ++it_end) {
@@ -150,15 +151,23 @@ void TmCore::AddStopSequenceToGraph(vector<string> stops, string bus, Graph::Dir
             edge.bus = bus;
             for (auto it_stop = it_begin; it_stop != prev(it_end); ++it_stop) {
                 double distance = sm.GetRoadDistance(*it_stop, *next(it_stop));
-                edge.weight += distance / bus_speed;
+                edge.weight += distance / (bus_speed * 1000 / 60);
             }
-            graph.AddEdge(edge);
+            graph->AddEdge(edge);
         }
     }
 }
 
 
 void TmCore::BuildRouter() {
-    graph = make_optional(sm.GetIdList().size());
+    graph = make_shared<Graph::DirectedWeightedGraph<double>>(sm.GetIdList().size());
     
+    for (const auto& [n, bus] : bm.GetBuses()) {
+        AddStopSequenceToGraph(bus.stops, bus.number);
+        if (bus.route_type == RouteType::TWO_WAY) {
+            AddStopSequenceToGraph({rbegin(bus.stops), rend(bus.stops)}, bus.number);
+        }
+    }
+    
+    router = make_shared<Graph::Router<double>>(*graph);
 }

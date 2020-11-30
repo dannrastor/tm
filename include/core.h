@@ -44,7 +44,7 @@ public:
     
 private:
     
-    void AddStopSequenceToGraph(vector<string> stops, string bus, Graph::DirectedWeightedGraph<double>& graph);
+    void AddStopSequenceToGraph(vector<string> stops, string bus);
     
     StopManager sm;
     BusManager bm;
@@ -55,7 +55,7 @@ private:
     
     void BuildRouter();
     
-    std::optional<Graph::DirectedWeightedGraph<double>> graph;
-    std::optional<Graph::Router<double>> router;
+    std::shared_ptr<Graph::DirectedWeightedGraph<double>> graph;
+    std::shared_ptr<Graph::Router<double>> router;
     
 };
